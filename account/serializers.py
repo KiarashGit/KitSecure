@@ -1,13 +1,15 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 User = get_user_model()
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'personnel_code']
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
@@ -20,6 +22,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -30,12 +33,22 @@ class LoginSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError("Invalid credentials")
 
+
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
     def validate(self, data):
-        self.token = data['refresh']
+        """Ensure refresh token is valid before proceeding."""
+        try:
+            RefreshToken(data['refresh'])  # Check if the token is valid
+        except TokenError:
+            raise serializers.ValidationError("Invalid or expired refresh token")
         return data
 
     def save(self, **kwargs):
-        RefreshToken(self.token).blacklist()
+        """Blacklist the refresh token to prevent reuse."""
+        try:
+            refresh = RefreshToken(self.validated_data['refresh'])
+            refresh.blacklist()
+        except TokenError:
+            raise serializers.ValidationError("Token is invalid or already blacklisted")

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from . import serializers
 from . import models
 from rest_framework import viewsets
-from django.contrib.auth import authenticate , login , logout
+from django.contrib.auth import authenticate, login, logout
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -11,17 +11,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, LogoutSerializer
 
-
 User = get_user_model()
 
-# region ViewSet ===> ApiViews 
+
+# region ViewSet ===> ApiViews
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
-    
-    
-    
 
 
 class AuthViewSet(viewsets.ViewSet):
@@ -47,12 +44,12 @@ class AuthViewSet(viewsets.ViewSet):
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
-    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated ])
     def logout(self, request):
         serializer = LogoutSerializer(data=request.data)
+
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Successfully logged out"}, status=status.HTTP_205_RESET_CONTENT)
+            serializer.save()  # Blacklist the refresh token
+            return Response({"message": "Successfully logged out👾"}, status=status.HTTP_205_RESET_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-# endregigon
+# endregion
