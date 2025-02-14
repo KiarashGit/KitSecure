@@ -27,13 +27,14 @@ INSTALLED_APPS = [
 
     # apps 
     'account',
+    'home',
 
     # frame works
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',
     'rest_framework_simplejwt.token_blacklist',
-    # 'mozilla_django_oidc',
+    'mozilla_django_oidc',
 ]
 
 MIDDLEWARE = [
@@ -119,6 +120,7 @@ AUTH_USER_MODEL = 'account.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'account.keycloak_auth_backend.KeycloakAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -135,3 +137,39 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+AUTHENTICATION_BACKENDS = [
+    "account.keycloak_auth_backend.KeycloakOIDCBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+# region keycloak
+
+OIDC_RP_CLIENT_ID = 'KharazmiID'
+OIDC_RP_CLIENT_SECRET = 'N7FiFW0gebOn2rNmnELj9eXm1Jdg3coX'
+
+OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://localhost:8080/realms/Kharazmi/protocol/openid-connect/auth'
+OIDC_OP_TOKEN_ENDPOINT = 'http://localhost:8080/realms/Kharazmi/protocol/openid-connect/token'
+OIDC_OP_USER_ENDPOINT = 'http://localhost:8080/realms/Kharazmi/protocol/openid-connect/userinfo'
+OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/realms/Kharazmi/protocol/openid-connect/certs'
+OIDC_RP_SIGN_ALGO = 'RS256'
+
+# OIDC_USERNAME_ALGO = lambda claims: claims.get('preferred_username') or claims.get('email') or claims.get('sub')
+OIDC_USERNAME_ALGO = lambda claims: claims.get('preferred_username', '') if isinstance(claims, dict) else ''
+
+# LOGIN_REDIRECT_URL = '/login_message/'  # Adjust to frontend URL
+# LOGOUT_URL = 'http://localhost:8080/realms/Kharazmi/protocol/openid-connect/logout'
+
+
+LOGIN_URL = '/oidc/authenticate/'
+LOGOUT_URL = 'account/logout'
+
+OIDC_CREATE_USER = True  # Optional, allows automatic user creation
+OIDC_RP_IDP_SIGN_KEY = None  # Optional, set if your Keycloak has custom signing
+OIDC_USE_NONCE = True  # Enable nonce for security
+OIDC_USE_PKCE = False  # Enable PKCE if supported by your provider
+
+# SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
+# endregion

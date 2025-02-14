@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from . import serializers
 from . import models
 from rest_framework import viewsets
@@ -53,3 +53,8 @@ class AuthViewSet(viewsets.ViewSet):
             return Response({"message": "Successfully logged out👾"}, status=status.HTTP_205_RESET_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # endregion
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('http://localhost:8080/realms/Kharazmi/protocol/openid-connect/logout')
