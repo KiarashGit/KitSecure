@@ -3,7 +3,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username,personnel_code=None, first_name=None, last_name=None, email=None,
+    def create_user(self, username, personnel_code=None,  email=None,
                     password=None, **extra_fields):
         if not username:
             raise ValueError("Users must have a username")
@@ -14,8 +14,6 @@ class UserManager(BaseUserManager):
         user = self.model(
             username=username,
             personnel_code=personnel_code,
-            first_name=first_name,
-            last_name=last_name,
             email=email,
             **extra_fields  # Capture any additional fields sent by Keycloak
         )
@@ -35,13 +33,11 @@ class UserManager(BaseUserManager):
             username=username,
             email=email,
             password=password,
-            **extra_fields 
+            **extra_fields
         )
         user.is_admin = True
         user.save(using=self._db)
         return user
-
-
 
 
 class User(AbstractBaseUser):
@@ -52,28 +48,17 @@ class User(AbstractBaseUser):
         null=True,
         blank=True,
     )
-    first_name = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name='First Name'
-    )
-    last_name = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name='Last Name'
-    )
+
     email_verified = models.BooleanField(default=False, null=True, blank=True)  # Add this field
     name = models.CharField(max_length=255, null=True, blank=True)  # Add this field
-    personnel_code = models.CharField(max_length=100, null=True, blank=True)
+    personnel_code = models.CharField(max_length=100, null=True, blank=True, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = "username"  # Must match the field name
-    REQUIRED_FIELDS = ['email']  
+    REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return self.username

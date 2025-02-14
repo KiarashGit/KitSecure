@@ -10,12 +10,12 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     # The fields to be used in displaying the User model.
-    list_display = ['username', 'email', 'first_name', 'is_admin']
+    list_display = ['username', 'email', 'is_admin']
     list_filter = ['is_admin']
 
     fieldsets = [
         (None, {'fields': ['username', 'password']}),
-        ('Personal info', {'fields': ['email', 'first_name', 'last_name', 'personnel_code']}),
+        ('Personal info', {'fields': ['email', 'personnel_code']}),
         ('Permissions', {'fields': ['is_admin', 'is_active']}),
     ]
 
@@ -26,12 +26,12 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 'classes': ['wide'],
-                'fields': ['username', 'email', 'personnel_code','first_name' , 'last_name' , 'password1', 'password2'],
+                'fields': ['username', 'email', 'personnel_code', 'password1', 'password2'],
             },
         ),
     ]
 
-    search_fields = ['username', 'email', 'last_name']
+    search_fields = ['username', 'email', 'personnel_code']
     ordering = ['username']
     filter_horizontal = []
 
