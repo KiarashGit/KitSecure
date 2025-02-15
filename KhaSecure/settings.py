@@ -118,13 +118,14 @@ STATIC_ROOT = BASE_DIR / 'statics'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'account.keycloak_auth_backend.KeycloakAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
+        'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_SCHEMA_CLASS':
         'drf_spectacular.openapi.AutoSchema',
@@ -146,7 +147,7 @@ AUTHENTICATION_BACKENDS = [
 # region keycloak
 
 OIDC_RP_CLIENT_ID = 'KharazmiID'
-OIDC_RP_CLIENT_SECRET = 'N7FiFW0gebOn2rNmnELj9eXm1Jdg3coX'
+OIDC_RP_CLIENT_SECRET = 'WtwgryGID2vh5qDS5tOjKe42ysG5wmv2'
 
 OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://localhost:8080/realms/Kharazmi/protocol/openid-connect/auth'
 OIDC_OP_TOKEN_ENDPOINT = 'http://localhost:8080/realms/Kharazmi/protocol/openid-connect/token'
