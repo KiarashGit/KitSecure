@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'rest_framework_simplejwt.token_blacklist',
     'mozilla_django_oidc',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -45,6 +46,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # need to add 
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'KhaSecure.urls'
@@ -121,7 +125,7 @@ AUTH_USER_MODEL = 'account.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'account.keycloak_auth_backend.KeycloakAuthentication',
+        # 'account.keycloak_auth_backend.KeycloakAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -134,7 +138,7 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Shorten token lifespan
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
@@ -174,3 +178,13 @@ OIDC_USE_PKCE = False  # Enable PKCE if supported by your provider
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 # endregion
+
+
+# frontend interaction
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8081",  # Allow requests from your Vue.js app
+    "http://192.168.3.25:8081", 
+]
+
+CORS_ALLOW_CREDENTIALS = True
