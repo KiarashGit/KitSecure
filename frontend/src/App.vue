@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div id="app">
     <UserList />
   </div>
@@ -12,8 +12,12 @@ export default {
     UserList,
   },
 };
-</script>
-<!-- 
+</script> -->
+
+
+
+
+
 <template>
   <div id="app">
     <router-view />  
@@ -28,4 +32,4 @@ export default {
 
 <style>
 /* Add styles if needed */
-</style> -->
+</style>
